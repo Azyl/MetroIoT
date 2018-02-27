@@ -5,3 +5,7 @@ google-auth==1.4.0
 google-cloud-pubsub==0.30.1
 pyjwt==1.5.3
 requests==2.18.4
+Adafruit-BBIO==1.0.10
+RPi.GPIO>=0.6.5
+adafruit-mcp3008==1.0.2
+-e  https://github.com/adafruit/Adafruit_Python_CharLCD.git#egg=Adafruit_CharLCD
