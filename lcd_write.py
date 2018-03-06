@@ -1,6 +1,6 @@
 import Adafruit_CharLCD as LCD
 
-class LCD_writter:
+class LCD_writter(object):
     def __init__(self):
         lcd_rs        = 25  # Note this might need to be changed to 21 for older revision Pi's.
         lcd_en        = 24

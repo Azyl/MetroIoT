@@ -1,215 +1,320 @@
-#!/usr/bin/env python
-
-# Copyright 2017 Google Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#         http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""Python sample for connecting to Google Cloud IoT Core via HTTP, using JWT.
-This example connects to Google Cloud IoT Core via HTTP, using a JWT for device
-authentication. After connecting, by default the device publishes 100 messages
-to the server at a rate of one per second, and then exits.
-Before you run the sample, you must register your device as described in the
-README in the parent folder.
-"""
-
-import argparse
 import base64
 import datetime
 import json
 import time
-
-
 from google.api_core import retry
 import jwt
 import requests
 
-_BASE_URL = 'https://cloudiotdevice.googleapis.com/v1'
-_BACKOFF_DURATION = 60
+
+class HTTP_iot_client(object):
+   
+    @property
+    def BASE_URL(self):
+        return self._BASE_URL
+    @BASE_URL.setter
+    def BASE_URL(self,value=None):
+        if value == None:
+            self._BASE_URL = 'https://cloudiotdevice.googleapis.com/v1'
+        else:
+            self._BASE_URL = value
+    @BASE_URL.getter
+    def BASE_URL(self):
+        return self._BASE_URL
+
+    @property
+    def BACKOFF_DURATION(self):
+        return self._BACKOFF_DURATION
+    @BACKOFF_DURATION.setter
+    def BACKOFF_DURATION(self,value=None):
+        if value == None:
+            self._BACKOFF_DURATION = 60
+        else:
+            self._BACKOFF_DURATION = value
+    @BACKOFF_DURATION.getter
+    def BACKOFF_DURATION(self):
+        return self._BACKOFF_DURATION
+
+    @property
+    def project_id(self):
+        return self._project_id
+    @project_id.setter
+    def project_id(self,value=None):
+        if value == None:
+            self._project_id = 'animated-bonsai-195009'
+        else:
+            self._project_id = value
+    @project_id.getter   
+    def project_id(self):
+        return self._project_id
+
+    @property
+    def registry_id(self):
+        return self._registry_id
+    @registry_id.setter
+    def registry_id(self,value=None):
+        if value == None:
+            self._registry_id = 'metro-iot-reg1'
+        else:
+            self._registry_id = value
+    @project_id.getter
+    def registry_id(self):
+        return self._project_id
+
+    @property
+    def device_id(self):
+         return self._device_id
+    @device_id.setter
+    def device_id(self,value=None):
+        if value == None:
+            self._device_id = 'raspi_node_1'
+        else:
+            self._device_id = value
+    @device_id.getter
+    def device_id(self):
+        return self._device_id
+
+    @property
+    def algorithm(self):
+         return self._algorithm
+    @algorithm.setter
+    def algorithm(self,value=None):
+        if value == None:
+            self._algorithm = 'RS256'
+        else:
+            self._algorithm = value
+    @algorithm.getter
+    def algorithm(self):
+        return self._algorithm
+
+    @property
+    def cloud_region(self):
+         return self._cloud_region
+    @cloud_region.setter
+    def cloud_region(self,value=None):
+        if value == None:
+            self._cloud_region = 'europe-west1'
+        else:
+            self._cloud_region = value
+    @cloud_region.getter
+    def cloud_region(self):
+        return self._cloud_region
+
+    @property
+    def ca_certs(self):
+         return self._ca_certs
+    @ca_certs.setter
+    def ca_certs(self,value=None):
+        if value == None:
+            self._ca_certs = 'roots.pem'
+        else:
+            self._ca_certs = value
+    @ca_certs.getter
+    def ca_certs(self):
+        return self._ca_certs
+
+    @property
+    def num_messages(self):
+         return self._num_messages
+    @num_messages.setter
+    def num_messages(self,value=None):
+         if value == None:
+            self._num_messages = 100
+         else:
+             self._num_messages = value
+    @num_messages.getter
+    def num_messages(self):
+        return self._num_messages
+
+    @property
+    def message_type(self):
+         return self._message_type
+    @message_type.setter
+    def message_type(self,value=None):
+         if value == None:
+             self._message_type = 'event'
+         else:
+             self._message_type = value
+    @message_type.getter
+    def message_type(self):
+        return self._message_type
 
 
-def create_jwt(project_id, private_key_file, algorithm):
-    token = {
-            # The time the token was issued.
-            'iat': datetime.datetime.utcnow(),
-            # Token expiration time.
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            # The audience field should always be set to the GCP project id.
-            'aud': project_id
-    }
-
-    # Read the private key file.
-    with open(private_key_file, 'r') as f:
-        private_key = f.read()
-
-    print('Creating JWT using {} from private key file {}'.format(
-            algorithm, private_key_file))
-
-    return jwt.encode(token, private_key, algorithm=algorithm).decode('ascii')
+    @property
+    def base_url(self):
+         return self._base_url
+    @base_url.setter
+    def base_url(self,value=None):
+         if value == None:
+             self._base_url = 'event'
+         else:
+             self._base_url = value
+    @base_url.getter
+    def base_url(self):
+        return self._base_url
 
 
-@retry.Retry(
-    predicate=retry.if_exception_type(AssertionError),
-    deadline=_BACKOFF_DURATION)
-def publish_message(
-        message, message_type, base_url, project_id, cloud_region, registry_id,
-        device_id, jwt_token):
-    headers = {
-            'authorization': 'Bearer {}'.format(jwt_token),
-            'content-type': 'application/json',
-            'cache-control': 'no-cache'
-    }
+    @property
+    def private_key_file(self):
+         return self._private_key_file
+    @private_key_file.setter
+    def private_key_file(self,value=None):
+         if value == None:
+             self._private_key_file = 'rsa_private.pem'
+         else:
+             self._base_url = value
+    @private_key_file.getter
+    def private_key_file(self):
+         return self._private_key_file
 
-    # Publish to the events or state topic based on the flag.
-    url_suffix = 'publishEvent' if message_type == 'event' else 'setState'
+    @property
+    def jwt_token(self):
+         return self._jwt_token
+    @jwt_token.setter
+    def jwt_token(self,value=None):
+         if value == None:
+             self._jwt_token = self.create_jwt(self.project_id,self.private_key_file,self.algorithm)
+         else:
+             self._jwt_token = value
+    @jwt_token.getter
+    def jwt_token(self):
+        return self._jwt_token
 
-    publish_url = (
-        '{}/projects/{}/locations/{}/registries/{}/devices/{}:{}').format(
-            base_url, project_id, cloud_region, registry_id, device_id,
-            url_suffix)
 
-    body = None
-    msg_bytes = base64.urlsafe_b64encode(message.encode('utf-8'))
-    if message_type == 'event':
-        body = {'binary_data': msg_bytes.decode('ascii')}
-    else:
-        body = {
-          'state': {'binary_data': msg_bytes.decode('ascii')}
+    @property
+    def jwt_iat(self):
+        return self._jwt_iat
+    @jwt_iat.setter
+    def jwt_iat(self,value=None):
+        if value == None:
+            self._jwt_iat = datetime.datetime.utcnow()
+        else:
+            self._jwt_token = value
+    @jwt_iat.getter
+    def jwt_iat(self):
+       return self._jwt_iat
+
+
+    @property
+    def jwt_expires_minutes(self):
+       return self._jwt_expires_minutes
+    @jwt_expires_minutes.setter
+    def jwt_expires_minutes(self,value=None):
+       if value == None:
+           self._jwt_expires_minutes = 20
+       else:
+           self._jwt_expires_minutes = value
+    @jwt_expires_minutes.getter
+    def jwt_expires_minutes(self):
+       return self._jwt_expires_minutes
+
+
+    def __init__ (self):
+        self._BASE_URL = None
+        self._BACKOFF_DURATION = None
+        self._project_id = None
+        self._registry_id = None
+        self._device_id = None
+        self._algorithm = None
+        self._cloud_region = None
+        self._ca_certs = None
+        self._num_messages = None
+        self._message_type = None
+        self._base_url = None
+        self._private_key_file = None
+        self._jwt_token = None
+        self._jwt_iat = None
+        self._jwt_expires_minutes = None
+
+
+    def create_jwt(project_id, private_key_file, algorithm):
+        token = {
+                # The time the token was issued.
+                'iat': datetime.datetime.utcnow(),
+                # Token expiration time.
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                # The audience field should always be set to the GCP project id.
+                'aud': project_id
         }
 
-    resp = requests.post(
-            publish_url, data=json.dumps(body), headers=headers)
+        # Read the private key file.
+        with open(private_key_file, 'r') as f:
+            private_key = f.read()
 
-    if (resp.status_code != 200):
-        print('Response came back {}, retrying'.format(resp.status_code))
-        raise AssertionError('Not OK response: {}'.format(resp.status_code))
+        print('Creating JWT using {} from private key file {}'.format(
+                algorithm, private_key_file))
 
-    return resp
+        return jwt.encode(token, private_key, algorithm=algorithm).decode('ascii')
 
 
-@retry.Retry(
+    @retry.Retry(
     predicate=retry.if_exception_type(AssertionError),
-    deadline=_BACKOFF_DURATION)
-# [START iot_http_getconfig]
-def get_config(
-        version, message_type, base_url, project_id, cloud_region, registry_id,
-        device_id, jwt_token):
-    headers = {
-            'authorization': 'Bearer {}'.format(jwt_token),
-            'content-type': 'application/json',
-            'cache-control': 'no-cache'
-    }
+    deadline=BACKOFF_DURATION)
+    def publish_message(
+            message, message_type, base_url, project_id, cloud_region, registry_id,
+            device_id, jwt_token):
+        headers = {
+                'authorization': 'Bearer {}'.format(jwt_token),
+                'content-type': 'application/json',
+                'cache-control': 'no-cache'
+        }
 
-    basepath = '{}/projects/{}/locations/{}/registries/{}/devices/{}/'
-    template = basepath + 'config?local_version={}'
-    config_url = template.format(
-        base_url, project_id, cloud_region, registry_id, device_id, version)
+        # Publish to the events or state topic based on the flag.
+        url_suffix = 'publishEvent' if message_type == 'event' else 'setState'
 
-    resp = requests.get(config_url, headers=headers)
+        publish_url = (
+            '{}/projects/{}/locations/{}/registries/{}/devices/{}:{}').format(
+                base_url, project_id, cloud_region, registry_id, device_id,
+                url_suffix)
 
-    if (resp.status_code != 200):
-        print('Error getting config: {}, retrying'.format(resp.status_code))
-        raise AssertionError('Not OK response: {}'.format(resp.status_code))
+        body = None
+        msg_bytes = base64.urlsafe_b64encode(message.encode('utf-8'))
+        if message_type == 'event':
+            body = {'binary_data': msg_bytes.decode('ascii')}
+        else:
+            body = {
+            'state': {'binary_data': msg_bytes.decode('ascii')}
+            }
 
-    return resp
-# [END iot_http_getconfig]
+        resp = requests.post(
+                publish_url, data=json.dumps(body), headers=headers)
 
+        if (resp.status_code != 200):
+            print('Response came back {}, retrying'.format(resp.status_code))
+            raise AssertionError('Not OK response: {}'.format(resp.status_code))
 
-def parse_command_line_args():
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description=(
-            'Example Google Cloud IoT Core HTTP device connection code.'))
-    parser.add_argument(
-            '--project_id', required=True, help='GCP cloud project name')
-    parser.add_argument(
-            '--registry_id', required=True, help='Cloud IoT Core registry id')
-    parser.add_argument(
-            '--device_id', required=True, help='Cloud IoT Core device id')
-    parser.add_argument(
-            '--private_key_file',
-            required=True,
-            help='Path to private key file.')
-    parser.add_argument(
-            '--algorithm',
-            choices=('RS256', 'ES256'),
-            required=True,
-            help='The encryption algorithm to use to generate the JWT.')
-    parser.add_argument(
-            '--cloud_region', default='us-central1', help='GCP cloud region')
-    parser.add_argument(
-            '--ca_certs',
-            default='roots.pem',
-            help=('CA root from https://pki.google.com/roots.pem'))
-    parser.add_argument(
-            '--num_messages',
-            type=int,
-            default=100,
-            help='Number of messages to publish.')
-    parser.add_argument(
-            '--message_type',
-            choices=('event', 'state'),
-            default='event',
-            required=True,
-            help=('Indicates whether the message to be published is a '
-                  'telemetry event or a device state message.'))
-    parser.add_argument(
-            '--base_url',
-            default=_BASE_URL,
-            help=('Base URL for the Cloud IoT Core Device Service API'))
-    parser.add_argument(
-            '--jwt_expires_minutes',
-            default=20,
-            type=int,
-            help=('Expiration time, in minutes, for JWT tokens.'))
-
-    return parser.parse_args()
+        return resp
 
 
-def main():
-    args = parse_command_line_args()
-
-    jwt_token = create_jwt(
-            args.project_id, args.private_key_file, args.algorithm)
-    jwt_iat = datetime.datetime.utcnow()
-    jwt_exp_mins = args.jwt_expires_minutes
-
-    print('Latest configuration: {}'.format(get_config(
-        '0', args.message_type, args.base_url, args.project_id,
-        args.cloud_region, args.registry_id, args.device_id, jwt_token).text))
-
-    # Publish num_messages mesages to the HTTP bridge once per second.
-    for i in range(1, args.num_messages + 1):
-        seconds_since_issue = (datetime.datetime.utcnow() - jwt_iat).seconds
-        if seconds_since_issue > 60 * jwt_exp_mins:
-            print('Refreshing token after {}s').format(seconds_since_issue)
-            jwt_token = create_jwt(
-                    args.project_id, args.private_key_file, args.algorithm)
-            jwt_iat = datetime.datetime.utcnow()
-
-        payload = '{}/{}-payload-{}'.format(
-                args.registry_id, args.device_id, i)
-
-        print('Publishing message {}/{}: \'{}\''.format(
-                i, args.num_messages, payload))
-
-        resp = publish_message(
-                payload, args.message_type, args.base_url, args.project_id,
-                args.cloud_region, args.registry_id, args.device_id, jwt_token)
-
-        print('HTTP response: ', resp)
-
-        # Send events every second. State should not be updated as often
-        time.sleep(1 if args.message_type == 'event' else 5)
-    print('Finished.')
 
 
-if __name__ == '__main__':
-    main()
+    @retry.Retry(
+    predicate=retry.if_exception_type(AssertionError),
+    deadline=BACKOFF_DURATION)
+    # [START iot_http_getconfig]
+    def get_config(
+            version, message_type, base_url, project_id, cloud_region, registry_id,
+            device_id, jwt_token):
+        headers = {
+                'authorization': 'Bearer {}'.format(jwt_token),
+                'content-type': 'application/json',
+                'cache-control': 'no-cache'
+        }
+
+        basepath = '{}/projects/{}/locations/{}/registries/{}/devices/{}/'
+        template = basepath + 'config?local_version={}'
+        config_url = template.format(
+            base_url, project_id, cloud_region, registry_id, device_id, version)
+
+        resp = requests.get(config_url, headers=headers)
+
+        if (resp.status_code != 200):
+            print('Error getting config: {}, retrying'.format(resp.status_code))
+            raise AssertionError('Not OK response: {}'.format(resp.status_code))
+
+        return resp
+        # [END iot_http_getconfig]      
+
+
+
+
