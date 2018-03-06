@@ -12,12 +12,14 @@ class HTTP_iot_client(object):
     @property
     def BASE_URL(self):
         return self._BASE_URL
+
     @BASE_URL.setter
     def BASE_URL(self,value=None):
-        if value == None:
+        if value is None:
             self._BASE_URL = 'https://cloudiotdevice.googleapis.com/v1'
         else:
             self._BASE_URL = value
+
     @BASE_URL.getter
     def BASE_URL(self):
         return self._BASE_URL
@@ -25,12 +27,14 @@ class HTTP_iot_client(object):
     @property
     def BACKOFF_DURATION(self):
         return self._BACKOFF_DURATION
+
     @BACKOFF_DURATION.setter
     def BACKOFF_DURATION(self,value=None):
-        if value == None:
+        if value is None:
             self._BACKOFF_DURATION = 60
         else:
             self._BACKOFF_DURATION = value
+
     @BACKOFF_DURATION.getter
     def BACKOFF_DURATION(self):
         return self._BACKOFF_DURATION
@@ -38,12 +42,14 @@ class HTTP_iot_client(object):
     @property
     def project_id(self):
         return self._project_id
+
     @project_id.setter
     def project_id(self,value=None):
-        if value == None:
+        if value is None:
             self._project_id = 'animated-bonsai-195009'
         else:
             self._project_id = value
+
     @project_id.getter   
     def project_id(self):
         return self._project_id
@@ -51,12 +57,14 @@ class HTTP_iot_client(object):
     @property
     def registry_id(self):
         return self._registry_id
+
     @registry_id.setter
     def registry_id(self,value=None):
-        if value == None:
+        if value is None:
             self._registry_id = 'metro-iot-reg1'
         else:
             self._registry_id = value
+
     @project_id.getter
     def registry_id(self):
         return self._project_id
@@ -64,12 +72,14 @@ class HTTP_iot_client(object):
     @property
     def device_id(self):
          return self._device_id
+
     @device_id.setter
     def device_id(self,value=None):
-        if value == None:
+        if value is None:
             self._device_id = 'raspi_node_1'
         else:
             self._device_id = value
+
     @device_id.getter
     def device_id(self):
         return self._device_id
@@ -77,12 +87,14 @@ class HTTP_iot_client(object):
     @property
     def algorithm(self):
          return self._algorithm
+
     @algorithm.setter
     def algorithm(self,value=None):
-        if value == None:
+        if value is None:
             self._algorithm = 'RS256'
         else:
             self._algorithm = value
+
     @algorithm.getter
     def algorithm(self):
         return self._algorithm
@@ -90,12 +102,14 @@ class HTTP_iot_client(object):
     @property
     def cloud_region(self):
          return self._cloud_region
+
     @cloud_region.setter
     def cloud_region(self,value=None):
-        if value == None:
+        if value is None:
             self._cloud_region = 'europe-west1'
         else:
             self._cloud_region = value
+
     @cloud_region.getter
     def cloud_region(self):
         return self._cloud_region
@@ -103,12 +117,14 @@ class HTTP_iot_client(object):
     @property
     def ca_certs(self):
          return self._ca_certs
+
     @ca_certs.setter
     def ca_certs(self,value=None):
-        if value == None:
+        if value is None:
             self._ca_certs = 'roots.pem'
         else:
             self._ca_certs = value
+
     @ca_certs.getter
     def ca_certs(self):
         return self._ca_certs
@@ -116,12 +132,14 @@ class HTTP_iot_client(object):
     @property
     def num_messages(self):
          return self._num_messages
+
     @num_messages.setter
     def num_messages(self,value=None):
-         if value == None:
+         if value is None:
             self._num_messages = 100
          else:
              self._num_messages = value
+
     @num_messages.getter
     def num_messages(self):
         return self._num_messages
@@ -129,40 +147,31 @@ class HTTP_iot_client(object):
     @property
     def message_type(self):
          return self._message_type
+
     @message_type.setter
     def message_type(self,value=None):
-         if value == None:
+         if value is None:
              self._message_type = 'event'
          else:
              self._message_type = value
+
     @message_type.getter
     def message_type(self):
         return self._message_type
 
 
-    @property
-    def base_url(self):
-         return self._base_url
-    @base_url.setter
-    def base_url(self,value=None):
-         if value == None:
-             self._base_url = 'event'
-         else:
-             self._base_url = value
-    @base_url.getter
-    def base_url(self):
-        return self._base_url
-
 
     @property
     def private_key_file(self):
          return self._private_key_file
+
     @private_key_file.setter
     def private_key_file(self,value=None):
-         if value == None:
+         if value is None:
              self._private_key_file = 'rsa_private.pem'
          else:
-             self._base_url = value
+             self._private_key_file = value
+
     @private_key_file.getter
     def private_key_file(self):
          return self._private_key_file
@@ -170,12 +179,14 @@ class HTTP_iot_client(object):
     @property
     def jwt_token(self):
          return self._jwt_token
+
     @jwt_token.setter
     def jwt_token(self,value=None):
-         if value == None:
-             self._jwt_token = self.create_jwt(self.project_id,self.private_key_file,self.algorithm)
+         if value is None:
+             self._jwt_token = self.create_jwt(self.project_id, self.private_key_file, self.algorithm)
          else:
              self._jwt_token = value
+
     @jwt_token.getter
     def jwt_token(self):
         return self._jwt_token
@@ -184,12 +195,14 @@ class HTTP_iot_client(object):
     @property
     def jwt_iat(self):
         return self._jwt_iat
+
     @jwt_iat.setter
     def jwt_iat(self,value=None):
-        if value == None:
+        if value is None:
             self._jwt_iat = datetime.datetime.utcnow()
         else:
             self._jwt_token = value
+
     @jwt_iat.getter
     def jwt_iat(self):
        return self._jwt_iat
@@ -198,33 +211,33 @@ class HTTP_iot_client(object):
     @property
     def jwt_expires_minutes(self):
        return self._jwt_expires_minutes
+
     @jwt_expires_minutes.setter
     def jwt_expires_minutes(self,value=None):
-       if value == None:
+       if value is None:
            self._jwt_expires_minutes = 20
        else:
            self._jwt_expires_minutes = value
+
     @jwt_expires_minutes.getter
     def jwt_expires_minutes(self):
        return self._jwt_expires_minutes
 
-
-    def __init__ (self):
-        self._BASE_URL = None
-        self._BACKOFF_DURATION = None
-        self._project_id = None
-        self._registry_id = None
-        self._device_id = None
-        self._algorithm = None
-        self._cloud_region = None
-        self._ca_certs = None
-        self._num_messages = None
-        self._message_type = None
-        self._base_url = None
-        self._private_key_file = None
-        self._jwt_token = None
-        self._jwt_iat = None
-        self._jwt_expires_minutes = None
+    def __init__(self, BASE_URL=None, BACKOFF_DURATION=None, project_id=None, registry_id=None, device_id=None, algorithm=None, cloud_region=None, ca_certs=None, num_messages=None, message_type=None, private_key_file=None, jwt_token=None, jwt_iat=None, jwt_expires_minutes=None):
+        self._BASE_URL = BASE_URL
+        self._BACKOFF_DURATION = BACKOFF_DURATION
+        self._project_id = project_id
+        self._registry_id = registry_id
+        self._device_id = device_id
+        self._algorithm = algorithm
+        self._cloud_region = cloud_region
+        self._ca_certs = ca_certs
+        self._num_messages = num_messages
+        self._message_type = message_type
+        self._private_key_file = private_key_file
+        self._jwt_token = jwt_token
+        self._jwt_iat = jwt_iat
+        self._jwt_expires_minutes = jwt_expires_minutes
 
 
     def create_jwt(project_id, private_key_file, algorithm):
