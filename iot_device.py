@@ -20,5 +20,5 @@ if __name__ == '__main__':
     device.iot_client.jwt_iat
 
     for i in range(1, device.iot_client.num_messages+1):
-        print (device.iot_client.jwt_token)
+        print(device.iot_client.jwt_token)
 
