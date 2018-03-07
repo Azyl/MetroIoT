@@ -262,6 +262,7 @@ class HTTP_iot_client(object):
     def get_config(self,
             version, message_type, base_url, project_id, cloud_region, registry_id,
             device_id, jwt_token):
+        print(jwt_token)
         headers = {
                 'authorization': 'Bearer {}'.format(jwt_token),
                 'content-type': 'application/json',
