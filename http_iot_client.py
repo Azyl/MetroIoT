@@ -277,7 +277,8 @@ class HTTP_iot_client(object):
 
         if (resp.status_code != 200):
             print('Error getting config: {}, retrying'.format(resp.status_code))
-            print(resp)
+            print(resp.content)
+            print(resp.text)
             raise AssertionError('Not OK response: {}'.format(resp.status_code))
 
         return resp
