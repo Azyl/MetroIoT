@@ -194,7 +194,7 @@ class HTTP_iot_client(object):
         self._jwt_iat = None
         self._jwt_expires_minutes = None
 
-    def create_jwt(self, project_id, private_key_file, algorithm):
+    def create_jwt(project_id, private_key_file, algorithm):
         token = {
                 # The time the token was issued.
                 'iat': datetime.datetime.utcnow(),
