@@ -29,7 +29,7 @@ if __name__ == '__main__':
         if seconds_since_issue > 60 * device.iot_client.jwt_expires_minutes:
             print('Refreshing token after {}s').format(seconds_since_issue)
             device.iot_client.jwt_token = device.iot_client.create_jwt(device.iot_client.project_id,device.iot_client.private_key_file)
-            jwt_iat = datetime.datetime.utcnow()
+            device.iot_client.jwt_iat = datetime.datetime.utcnow()
 
         payload = '{}/{}-payload-{}'.format(device.iot_client.registry_id, device.iot_client.device_id, i)
 

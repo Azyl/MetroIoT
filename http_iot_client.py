@@ -217,7 +217,7 @@ class HTTP_iot_client(object):
     @retry.Retry(
     predicate=retry.if_exception_type(AssertionError),
     deadline=60)
-    def publish_message(self,
+    def publish_message(
             message, message_type, base_url, project_id, cloud_region, registry_id,
             device_id, jwt_token):
         headers = {
@@ -259,7 +259,7 @@ class HTTP_iot_client(object):
     predicate=retry.if_exception_type(AssertionError),
     deadline=60)
     # [START iot_http_getconfig]
-    def get_config(self,
+    def get_config(
             version, message_type, base_url, project_id, cloud_region, registry_id,
             device_id, jwt_token):
 
