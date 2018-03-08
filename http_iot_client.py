@@ -211,7 +211,9 @@ class HTTP_iot_client(object):
         print('Creating JWT using {} from private key file {}'.format(
                 algorithm, private_key_file))
 
-        return jwt.encode(token, private_key, algorithm=algorithm).decode('ascii')
+        jwt_token = jwt.encode(token, private_key, algorithm=algorithm).decode('ascii')
+
+        return jwt_token
 
 
     @retry.Retry(
